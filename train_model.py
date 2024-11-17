@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
 from datasets import Dataset
+from sklearn.model_selection import train_test_split
 
 data = {
     "lyrics": [
@@ -35,10 +36,14 @@ training_args = TrainingArguments(
     logging_dir="./logs",
 )
 
+# Split the dataset into training and evaluation sets
+train_dataset, eval_dataset = train_test_split(tokenized_dataset, test_size=0.2)
+
 trainer = Trainer(
     model=model,
     args=training_args,
-    train_dataset=tokenized_dataset,
+    train_dataset=train_dataset,
+    eval_dataset=eval_dataset,
     tokenizer=tokenizer,
 )
 
